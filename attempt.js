@@ -22,9 +22,41 @@ camera.position.y = 7;
 
 scene.background = new THREE.Color(0x000000);
 
+let welcomeText = document.createElement('div');
+welcomeText.innerHTML += "Witaj na stronie gdańskiego Google Development Student Club.";
+welcomeText.className = "welcomeText";
+document.body.appendChild(welcomeText);
 
-let dotArray = [];
+let secondText = document.createElement('div');
+secondText.innerHTML += "Jeszcze nie wiem co ale cos tu napisze";
+secondText.className = "secondText";
+document.body.appendChild(secondText);
 
+// TEXT FORMATTING //
+//Nie mam pojęcia co tu sie dzieje ale znalazłem to sobie wziąłem i działa
+var textWrapper = document.querySelector('.welcomeText');
+textWrapper.innerHTML = textWrapper.textContent.replace(/\S/g, "<span class='letter'>$&</span>");
+
+anime.timeline({loop: 1})
+  .add({
+    targets: '.welcomeText .letter',
+    opacity: [0,1],
+    easing: "easeInOutQuad",
+    duration: 2250,
+    delay: (el, i) => 150 * (i+1)
+  })
+  /*.add({
+    targets: '.welcomeText',
+    opacity: 0,
+    duration: 1000,
+    easing: "easeOutExpo",
+    delay: 1000
+  });
+  */
+
+//-------------------//
+
+let dotArray= [];
 function addDots(n){
 
     for(var j=0;j<n;j++){

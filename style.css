@@ -1,0 +1,32 @@
+.welcomeText{
+    width: 1400px;
+    height: 400px;
+    position: absolute;
+    top: 400px;
+    left: 200px;
+    font-family: 'Xanh Mono', monospace;
+    font-size: 40;
+    color: white;
+    text-align: center;
+    user-select: none;
+    opacity: 1;
+    transition: width 2s height 2s;
+}
+
+.secondText{
+    width: 1400px;
+    height: 400px;
+    position: absolute;
+    top: 500px;
+    left: 200px;
+    font-family: 'Xanh Mono', monospace;
+    font-size: 40;
+    color: white;
+    text-align: center;
+    user-select: none;
+    opacity: 1;
+    transition: width 2s height 2s;
+}
+
+
+
