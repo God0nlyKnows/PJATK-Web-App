@@ -10,7 +10,7 @@
     text-align: center;
     user-select: none;
     opacity: 1;
-    transition: width 2s height 2s;
+    transition-timing-function: ease;
 }
 
 .secondText{

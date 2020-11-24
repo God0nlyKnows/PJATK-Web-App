@@ -1,13 +1,12 @@
 let scene = new THREE.Scene();
-let camera = new THREE.PerspectiveCamera (75, window.innerWidth / window.innerHeight, 0.1, 10000);
+let camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 10000);
 
 let renderer = new THREE.WebGLRenderer();
 renderer.setSize(window.innerWidth, window.innerHeight);
 document.body.appendChild(renderer.domElement);
 
 
-window.addEventListener('resize', function()
-{
+window.addEventListener('resize', function () {
     var width = window.innerWidth;
     var height = window.innerHeight;
     renderer.setSize(width, height);
@@ -16,7 +15,7 @@ window.addEventListener('resize', function()
 })
 
 //const controls = new THREE.OrbitControls(camera, renderer.domElement);
-camera.position.z = 15;
+camera.position.z = 10;
 camera.position.x = 10;
 camera.position.y = 7;
 
@@ -25,65 +24,71 @@ scene.background = new THREE.Color(0x000000);
 let welcomeText = document.createElement('div');
 welcomeText.innerHTML += "Witaj na stronie gdańskiego Google Development Student Club.";
 welcomeText.className = "welcomeText";
+welcomeText.setAttribute("id", "welcomeText");
+welcomeText.style.display = "none";
 document.body.appendChild(welcomeText);
+setInterval(function () { welcomeText.style.display = "block" }, 500); // zapobieganie przedwczesnemu zaladowaniu sie
 
-let secondText = document.createElement('div');
-secondText.innerHTML += "Jeszcze nie wiem co ale cos tu napisze";
-secondText.className = "secondText";
-document.body.appendChild(secondText);
 
 // TEXT FORMATTING //
 //Nie mam pojęcia co tu sie dzieje ale znalazłem to sobie wziąłem i działa
 var textWrapper = document.querySelector('.welcomeText');
 textWrapper.innerHTML = textWrapper.textContent.replace(/\S/g, "<span class='letter'>$&</span>");
 
-anime.timeline({loop: 1})
-  .add({
-    targets: '.welcomeText .letter',
-    opacity: [0,1],
-    easing: "easeInOutQuad",
-    duration: 2250,
-    delay: (el, i) => 150 * (i+1)
-  })
-  /*.add({
-    targets: '.welcomeText',
-    opacity: 0,
-    duration: 1000,
-    easing: "easeOutExpo",
-    delay: 1000
-  });
-  */
+let ifWelcomeTextLoaded = false; // Zapobieganie spamowaniu klawiszy
+
+function textAnimation() {
+    anime.timeline({ loop: 1 })
+        .add({
+            targets: '.welcomeText .letter',
+            opacity: [0, 1],
+            easing: "easeInOutQuad",
+            duration: 2250,
+            delay: (el, i) => 150 * (i + 1)
+        })
+    /*.add({
+      targets: '.welcomeText',
+      opacity: 0,
+      duration: 1000,
+      easing: "easeOutExpo",
+      delay: 1000
+    });
+    */
+   setInterval(function(){ifWelcomeTextLoaded = true}, 11000);
+}
+
+textAnimation();
 
 //-------------------//
 
-let dotArray= [];
-function addDots(n){
+let dotArray = [];
+function addDots(n) {
 
-    for(var j=0;j<n;j++){
-        const dotGeometry = new THREE.SphereGeometry(0.01,12,12);
-        const dotMaterial = new THREE.MeshBasicMaterial({color: 0xFFFFFF, side: THREE.DoubleSide});
-        const dot = new THREE.Mesh(dotGeometry,dotMaterial);
+    for (var j = 0; j < n; j++) {
+        const dotGeometry = new THREE.SphereGeometry(0.01, 12, 12);
+        const dotMaterial = new THREE.MeshBasicMaterial({ color: 0xFFFFFF, side: THREE.DoubleSide });
+        const dot = new THREE.Mesh(dotGeometry, dotMaterial);
         scene.add(dot);
         dotArray.push(dot);
-        let randomNum1 = Math.random()* 25;
-        let randomNum2 = Math.random()* 10;
-        let randomNum3 = (Math.random()* 15)+ 10;
-        dot.position.set(randomNum1,randomNum2,randomNum3);
+        let randomNum1 = Math.random() * 30; // 25
+        let randomNum2 = Math.random() * 15; // 10
+        let randomNum3 = (Math.random() * 15) + 10;
+        dot.position.set(randomNum1, randomNum2, randomNum3);
     }
 }
 
-function updateDots(){
+function updateDots() {
     let array = dotArray;
-    for(var i=0;i<array.length;i++){
+    for (var i = 0; i < array.length; i++) {
         array[i].position.x += 0.01;
         array[i].position.y += 0.01;
-        array[i].position.z -= 0.01; 
+        array[i].position.z -= 0.01;
 
-        let randomNum1 = Math.random()* 25;
-        let randomNum2 = Math.random()* 10;
-        let randomNum3 = (Math.random()* 15)+ 10;
-        
-        if(array[i].position.x>20 || array[i].position.y>15 || array[i].position.z<0){
+        let randomNum1 = Math.random() * 25;
+        let randomNum2 = Math.random() * 10;
+        let randomNum3 = (Math.random() * 15) + 10;
+
+        if (array[i].position.x > 20 || array[i].position.y > 15 || array[i].position.z < 0) {
             array[i].position.x = randomNum1;
             array[i].position.y = randomNum2;
             array[i].position.z = randomNum3;
@@ -91,18 +96,66 @@ function updateDots(){
     }
 }
 
-let update = function (){
+let counter = 0;
+
+function accelerate() {
+    if (camera.position.z < 12.5) {
+        counter++;
+        camera.position.z += 0.04;
+    }
+}
+
+let ifSceneLoaded = false; // zapobieganie ponownemu ladowaniu sceny
+let currentScene = 1;
+
+let scenesLoaded = [false,false,false,false,false,false];
+let sceneContents = [
+    "Default scene 0 index",
+    "Second scene",
+    "Third scene",
+    "Fourth scene"
+];
+
+function changeScenes() { // do skonczenia, bedzie kilka scen
+    if (ifWelcomeTextLoaded == true && ifSceneLoaded == false) {
+        if(currentScene==1){
+        item = document.getElementById("welcomeText");
+        item.style.display = "none";
+        item.innerHTML = "Scena II. Popoga Popoga Popoga Popoga Popoga Popoga Popoga Popoga Popoga Popoga Popoga Popoga";
+        }
+
+        var textWrapper = document.querySelector('.welcomeText');
+        textWrapper.innerHTML = textWrapper.textContent.replace(/\S/g, "<span class='letter'>$&</span>");
+
+        setTimeout(function () { item.style.display = "block" }, 500); // zapobieganie przedwczesnemu zaladowaniu sie animacji
+
+        textAnimation();
+
+        setInterval(function () { accelerate() }, 10);
+        ifSceneLoaded = true;
+        currentScene++;
+    }
+}
+
+/*
+window.addEventListener("keypress", function () {
+    changeScenes();
+})
+*/
+
+let update = function () {
     updateDots();
+    changeScenes();
 };
 
-let render = function (){
-    renderer.render(scene,camera);
+let render = function () {
+    renderer.render(scene, camera);
 };
 
-let mainLoop = function (){
+let mainLoop = function () {
     requestAnimationFrame(mainLoop);
     update();
     render();
 }
-addDots(2000);
+addDots(2500);
 mainLoop();
